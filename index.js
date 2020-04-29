@@ -17,8 +17,8 @@ app.use(function(req, res, next) {
 
 // Serve static files from the React app
 // ******* Probably need to change for production build *****
-// app.use(express.static(path.join(__dirname, 'client/build'))); 
-app.use(express.static(path.join(__dirname, 'client/'))); 
+app.use(express.static(path.join(__dirname, 'client/build'))); 
+// app.use(express.static(path.join(__dirname, 'client/'))); 
 
 /** API Routes **/ 
 // General ping routes
@@ -31,7 +31,8 @@ app.get('/ping', require('./server/api/general').ping);
 
 // A "catchall" handler for any request that doesn't match one above. Send back React's index.html file.
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname+'/client/index.html'));
+  res.sendFile(path.join(__dirname+'/client/build/index.html'));
+  // res.sendFile(path.join(__dirname+'/client/index.html'));
 });
 
 //Port listener
