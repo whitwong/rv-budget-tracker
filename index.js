@@ -22,17 +22,7 @@ app.use(express.static(path.join(__dirname, 'client/build')));
 /** API Routes **/ 
 // General ping routes
 // app.get('/', require('./server/api/general').init);
-// app.get('/ping', require('./server/api/general').ping);
-//Quick check that backend is up
-app.get('/', (req, res) => {
-  res.status(200).send("OK");
-  console.log("sending ok message")
-});
-
-app.get('/ping', (req, res) => {
-  res.status(200).send('Ping OK');
-  console.log("pinging")
-});
+app.get('/ping', require('./server/api/general').ping);
 
 // // GET and POST routes for expenses
 // app.get('/getExpense/:category', require('./server/api/expenses').getExpense);
