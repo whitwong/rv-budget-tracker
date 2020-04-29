@@ -1,0 +1,34 @@
+{
+  "name": "rv-budget-tracker",
+  "version": "1.0.0",
+  "description": "Budget tracker for RV travels",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "heroku-postbuild": "cd client && npm install && npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/whitwong/rv-budget-tracker.git"
+  },
+  "keywords": [
+    "rv",
+    "budget",
+    "tracker",
+    "travel",
+    "express",
+    "node",
+    "react"
+  ],
+  "author": "Whitney Wong",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/whitwong/rv-budget-tracker/issues"
+  },
+  "homepage": "https://github.com/whitwong/rv-budget-tracker#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1"
+  }
+}
