@@ -1,3 +1,5 @@
+'use strict';
+
 const express = require('express');
 const path = require('path');
 const app = express();
@@ -16,11 +18,10 @@ app.use(function(req, res, next) {
 });
 
 // Serve static files from the React app
-// ******* Probably need to change for production build *****
 app.use(express.static(path.join(__dirname, 'client/build'))); 
 
 /** API Routes **/ 
-// General ping routes
+// General backend status check/ping routes
 app.get('/', require('./server/api/general').init);
 app.get('/ping', require('./server/api/general').ping);
 
