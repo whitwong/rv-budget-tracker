@@ -18,12 +18,21 @@ app.use(function(req, res, next) {
 // Serve static files from the React app
 // ******* Probably need to change for production build *****
 app.use(express.static(path.join(__dirname, 'client/build'))); 
-// app.use(express.static(path.join(__dirname, 'client/'))); 
 
 /** API Routes **/ 
 // General ping routes
-app.get('/', require('./server/api/general').init);
-app.get('/ping', require('./server/api/general').ping);
+// app.get('/', require('./server/api/general').init);
+// app.get('/ping', require('./server/api/general').ping);
+//Quick check that backend is up
+app.get('/', (req, res) => {
+  res.status(200).send("OK");
+  console.log("sending ok message")
+});
+
+app.get('/ping', (req, res) => {
+  res.status(200).send('Ping OK');
+  console.log("pinging")
+});
 
 // // GET and POST routes for expenses
 // app.get('/getExpense/:category', require('./server/api/expenses').getExpense);
@@ -32,7 +41,6 @@ app.get('/ping', require('./server/api/general').ping);
 // A "catchall" handler for any request that doesn't match one above. Send back React's index.html file.
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname+'/client/build/index.html'));
-  // res.sendFile(path.join(__dirname+'/client/index.html'));
 });
 
 //Port listener
