@@ -8,10 +8,7 @@ const App = () => {
     <div className="App">
       <header className="App-header">  
 
-        <h1>Hi Whitney <span role="img">👋</span></h1>
-        <p>Welcome to your RV Budget Tracker Dashboard</p>    
-
-        <NavigationBar />
+      <NavigationBar />
 
       </header>
     </div>

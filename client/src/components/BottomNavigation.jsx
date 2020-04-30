@@ -12,7 +12,7 @@ import AboutUsPage from '../pages/AboutUs';
 
 const useStyles = makeStyles({
   root: {
-    width: 500,
+    width: "100%",
   },
 });
 
