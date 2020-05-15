@@ -25,9 +25,9 @@ app.use(express.static(path.join(__dirname, 'client/build')));
 app.get('/', require('./server/api/general').init);
 app.get('/ping', require('./server/api/general').ping);
 
-// // GET and POST routes for expenses
-// app.get('/getExpense/:category', require('./server/api/expenses').getExpense);
-// app.get('/getCategories', require('./server/api/expenses').getCategories);
+// Routes for expense data
+app.get('/getCategories', require('./server/api/expenses').getCategories);
+app.get('/getExpense/:category', require('./server/api/expenses').getExpense);
 
 // A "catchall" handler for any request that doesn't match one above. Send back React's index.html file.
 app.get('*', (req, res) => {
