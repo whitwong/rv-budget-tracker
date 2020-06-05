@@ -6,8 +6,9 @@ const { Client } = require('pg');
 // *** Connect to Database *** //
 const client = new Client({
   connectionString: connectionString,
-})
-client.connect()
+});
+
+client.connect();
 
 // GET route to find and return all distinct categories
 function getCategories(req, res) {
@@ -17,7 +18,7 @@ function getCategories(req, res) {
       res.status(200).send(data.rows);
     })
     .catch(err => {
-      res.send(404).send(err);
+      res.status(404).send(err);
     })
 };
 
@@ -29,9 +30,9 @@ function getExpense(req, res) {
       res.status(200).send(data.rows);
     })
     .catch(err => {
-      res.send(404).send(err)
+      res.status(404).send(err)
     }) 
-}
+};
 
 
 module.exports = {

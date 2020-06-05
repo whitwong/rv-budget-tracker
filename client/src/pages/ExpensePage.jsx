@@ -1,27 +1,65 @@
-import React from 'react';
+import React, { useState } from 'react';
+import Button from '@material-ui/core/Button';
+import ExpenseCardList from '../components/ExpenseList';
 
 // Container for Expense page view
 const ExpensePage = () => {
 
-  // Simple function to send request to /ping route and return response
-  const buttonPress = () => {
-    console.log("button pressed")
-    fetch('/ping')
+  // React hook for Categories
+  let [categoryList, setCategories] = useState(null);
+  let [monthlyList, setMonth] = useState(null);
+
+  // Send request to get categories from db and set categoryList with returned data. If error, throw error and log to console on client.
+  const getCategories = () => {
+    console.log("retrieving categories")
+    fetch('/getCategories')
+      .then(response => response.json())
+      .then(data => { 
+        categoryList = data.map(obj => obj.category);
+        setCategories(categoryList);
+        setMonth(null);
+      })
+      .catch(err => { console.log(err); throw(err) })
   }  
+
+  // When monthly-btn selected, set monthly list.
+  const getMonths = () => {
+    console.log("retrieving months");
+    setMonth(["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
+    setCategories(null);
+  }
 
   return(
     <div className="ExpensePage">
-      <p>Put expense data here</p>
-      <p>Probably put <code>ExpenseList.jsx</code> here</p>
+      <p>Choose how you'd like to see Expense Data</p>
 
-      {/* Random button to quick test that backend is still sending back responses */}
-      <button 
-          className="click-me-button"
-          onClick={buttonPress}
+      {/* If categoryList or monthlyList are populated then display the chosen list */}
+      {
+        categoryList || monthlyList ? 
+        <ExpenseCardList list={categoryList || monthlyList} />
+        : 
+        null
+      }
+
+      {/* Button to get categories of data */}
+      <Button 
+          color="primary"
+          variant="contained"
+          className="category-btn"
+          onClick={() => getCategories()}
         >
-          Click Me!
-      </button>
+          By Category
+      </Button>
 
+      {/* Button to get data by month */}
+      <Button 
+          color="primary"
+          variant="contained"
+          className="monthly-btn"
+          onClick={() => getMonths()}
+        >
+          By Month
+      </Button>
     </div>
   );
 }
