@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Button from '@material-ui/core/Button';
 import ExpenseCardList from '../components/ExpenseList';
 
 // Container for Expense page view
@@ -41,20 +42,24 @@ const ExpensePage = () => {
       }
 
       {/* Button to get categories of data */}
-      <button 
+      <Button 
+          color="primary"
+          variant="contained"
           className="category-btn"
           onClick={() => getCategories()}
         >
           By Category
-      </button>
+      </Button>
 
       {/* Button to get data by month */}
-      <button 
+      <Button 
+          color="primary"
+          variant="contained"
           className="monthly-btn"
           onClick={() => getMonths()}
         >
           By Month
-      </button>
+      </Button>
     </div>
   );
 }
