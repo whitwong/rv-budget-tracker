@@ -7,7 +7,8 @@ const ExpensePage = () => {
 
   // React hook for Categories
   let [categoryList, setCategories] = useState(null);
-  let [monthlyList, setMonth] = useState(null);
+  const [monthlyList, setMonth] = useState(null);
+  const [search, setSearch] = useState(null);
 
   // Send request to get categories from db and set categoryList with returned data. If error, throw error and log to console on client.
   const getCategories = () => {
@@ -17,6 +18,7 @@ const ExpensePage = () => {
       .then(data => { 
         categoryList = data.map(obj => obj.category);
         setCategories(categoryList);
+        setSearch("category");
         setMonth(null);
       })
       .catch(err => { console.log(err); throw(err) })
@@ -26,6 +28,7 @@ const ExpensePage = () => {
   const getMonths = () => {
     console.log("retrieving months");
     setMonth(["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
+    setSearch("month")
     setCategories(null);
   }
 
@@ -36,7 +39,7 @@ const ExpensePage = () => {
       {/* If categoryList or monthlyList are populated then display the chosen list */}
       {
         categoryList || monthlyList ? 
-        <ExpenseCardList list={categoryList || monthlyList} />
+        <ExpenseCardList list={categoryList || monthlyList} search={search} />
         : 
         null
       }
