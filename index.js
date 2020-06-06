@@ -27,7 +27,8 @@ app.get('/ping', require('./server/api/general').ping);
 
 // Routes for expense data
 app.get('/getCategories', require('./server/api/expenses').getCategories);
-app.get('/getExpense/:category', require('./server/api/expenses').getExpense);
+app.get('/getExpenseCategory/:category', require('./server/api/expenses').getExpenseCategory);
+app.get('/getExpenseMonthly/:month', require('./server/api/expenses').getExpenseMonthly);
 
 // A "catchall" handler for any request that doesn't match one above. Send back React's index.html file.
 app.get('*', (req, res) => {
