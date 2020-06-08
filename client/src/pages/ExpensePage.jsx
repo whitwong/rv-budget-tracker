@@ -35,6 +35,7 @@ const ExpensePage = () => {
     else {
       console.log("retrieving categories from state")
 
+      setSearch("category");
       setShowList({
         showCategory: true,
         showMonthly: false
