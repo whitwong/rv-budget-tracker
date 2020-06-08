@@ -24,17 +24,15 @@ const ExpenseCardList = ({ list, search }) => {
 
   // Send request to get data associated with category/month
   const getExpenseDetails = ( listItem ) => {
-    console.log("getting expense deets " + listItem + " " + search);
     if(search === 'category') {
       fetch('/getExpenseCategory/'+listItem)
         .then(response => response.json())
-        .then(data => console.log(data))
+        .then(data => console.log(data)) //Do something with this data!!!
     }
     else if(search === "month") {
-      console.log("getting expense deets " + listItem)
       fetch('/getExpenseMonthly/'+listItem)
         .then(response => response.json())
-        .then(data => console.log(data))
+        .then(data => console.log(data)) //Do something with this data!!!
     }
   }
 
