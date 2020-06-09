@@ -26,7 +26,7 @@ function getCategories(req, res) {
 // GET route to find and return all expenses of a specified category
 function getExpenseCategory(req, res) {
   client
-    .query('SELECT * from expenses where category = $1;', [req.params.category])
+    .query('SELECT * from expenses where category = $1 order by purchase_date asc;', [req.params.category])
     .then(data => {
       res.status(200).send(data.rows);
     })
@@ -41,7 +41,7 @@ function getExpenseMonthly(req, res) {
 
   if (selectedMonth !== 'December'){
     client
-      .query(`SELECT * from expenses where purchase_date >= '2019-${month[selectedMonth]}-01' and purchase_date < '2019-${month[selectedMonth]+1}-01';`)
+      .query(`SELECT * from expenses where purchase_date >= '2019-${month[selectedMonth]}-01' and purchase_date < '2019-${month[selectedMonth]+1}-01' order by purchase_date asc;`)
       .then(data => {
         res.status(200).send(data.rows);
       })
@@ -51,7 +51,7 @@ function getExpenseMonthly(req, res) {
   }
   else {
     client
-      .query(`SELECT * from expenses where (purchase_date >= '2019-12-01' and purchase_date < '2019-12-31' OR purchase_date >= '2018-12-01' and purchase_date < '2018-12-31');`)
+      .query(`SELECT * from expenses where (purchase_date >= '2019-12-01' and purchase_date < '2019-12-31' OR purchase_date >= '2018-12-01' and purchase_date < '2018-12-31') order by purchase_date asc;`)
       .then(data => {
         res.status(200).send(data.rows);
       })
