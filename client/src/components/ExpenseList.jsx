@@ -1,9 +1,20 @@
 import React, { useState } from 'react';
-import ExpenseDetails from './ExpenseDetails';
+import ExpenseChart from './ExpenseChart';
+// import ExpenseModal from './ExpenseModal';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import Button from '@material-ui/core/Button';
+// Dialog import
+import Dialog from '@material-ui/core/Dialog';
+import MuiDialogTitle from '@material-ui/core/DialogTitle';
+import MuiDialogContent from '@material-ui/core/DialogContent';
+import MuiDialogActions from '@material-ui/core/DialogActions';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
+import Typography from '@material-ui/core/Typography';
+import { withStyles } from '@material-ui/core/styles';
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -19,13 +30,52 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const styles = (theme) => ({
+  root: {
+    margin: 0,
+    padding: theme.spacing(2),
+  },
+  closeButton: {
+    position: 'absolute',
+    right: theme.spacing(1),
+    top: theme.spacing(1),
+    color: theme.palette.grey[500],
+  },
+});
+const DialogTitle = withStyles(styles)((props) => {
+  const { children, classes, onClose, ...other } = props;
+  return (
+    <MuiDialogTitle disableTypography className={classes.root} {...other}>
+      <Typography variant="h6">{children}</Typography>
+      {onClose ? (
+        <IconButton aria-label="close" className={classes.closeButton} onClick={onClose}>
+          <CloseIcon />
+        </IconButton>
+      ) : null}
+    </MuiDialogTitle>
+  );
+});
+
+const DialogContent = withStyles((theme) => ({
+  root: {
+    padding: theme.spacing(2),
+  },
+}))(MuiDialogContent);
+
+const DialogActions = withStyles((theme) => ({
+  root: {
+    margin: 0,
+    padding: theme.spacing(1),
+  },
+}))(MuiDialogActions);
+
 // Get list data and display using Material-UI components
 const ExpenseCardList = ({ list, search }) => {
   const classes = useStyles();
 
   // React hook for expense variables
-  const [expenseDetails, setExpenseDetails] = useState(null);
-  const [showExpenseDetails, setShowExpenseDetails] = useState(false)
+  const [expenseData, setExpenseData] = useState(null);
+  const [showExpenseModal, setShowExpenseModal] = useState(false)
 
   // Helper function to clean up returned data before passing to ExpenseDetails
   const cleanData = ( data ) => {
@@ -43,7 +93,7 @@ const ExpenseCardList = ({ list, search }) => {
   }
 
   // Send request to get data associated with category/month
-  const getExpenseDetails = ( listItem ) => {
+  const getExpenseData = ( listItem ) => {
     let url = "";
     search === 'category' ? url='/getExpenseCategory/' : url='/getExpenseMonthly/';
 
@@ -51,10 +101,20 @@ const ExpenseCardList = ({ list, search }) => {
         .then(response => response.json())
         .then(data => cleanData(data))
         .then(data => {
-          setShowExpenseDetails(true);
-          setExpenseDetails(data);
+          setShowExpenseModal(true);
+          setExpenseData(data);
         })
+        .catch(err => console.log("Woops...Trouble retrieving data " + err))
   }
+
+  // Modal Functions
+  const [open, setOpen] = useState(false);
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   return(
     <div className={classes.root}>
@@ -77,7 +137,10 @@ const ExpenseCardList = ({ list, search }) => {
           <CardActions>
             <Button 
               item={listItem}
-              onClick={() => getExpenseDetails(listItem, search)}
+              onClick={() => {
+                getExpenseData(listItem, search);
+                handleClickOpen()
+              }}
             >
               Details
             </Button>
@@ -87,8 +150,24 @@ const ExpenseCardList = ({ list, search }) => {
     }
 
     {/* Display expense details */}
+    {/* Make into a dialog box?????? */}
     {
-      showExpenseDetails ? <ExpenseDetails data={expenseDetails}/> : null
+      // showExpenseDetails ? <ExpenseDetails data={expenseDetails}/> : null
+      // showExpenseModal ? <ExpenseModal data={expenseData} open={showExpenseModal} /> : null
+      // <ExpenseModal data={expenseData} open={showExpenseModal} />
+      <Dialog onClose={handleClose} aria-labelledby="customized-dialog-title" open={open}>
+        <DialogTitle id="customized-dialog-title" onClose={handleClose}>
+          Modal title
+        </DialogTitle>
+        <DialogContent dividers>
+          <ExpenseChart data={expenseData} />
+        </DialogContent>
+        <DialogActions>
+          <Button autoFocus onClick={handleClose} color="primary">
+            Save changes
+          </Button>
+        </DialogActions>
+      </Dialog>
     }
   </div>
   );

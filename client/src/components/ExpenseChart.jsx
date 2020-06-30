@@ -1,12 +1,11 @@
 import React from 'react';
-import {
-  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
-} from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 
-
-const ExpenseDetails = ({ data }) => {
+// Chart parameters when displayed
+const ExpenseChart = ({ data }) => {
   return (
     <LineChart
+      display="flex"
       width={1000}
       height={700}
       data={data}
@@ -24,4 +23,4 @@ const ExpenseDetails = ({ data }) => {
   );
 }
 
-export default ExpenseDetails;
+export default ExpenseChart;
