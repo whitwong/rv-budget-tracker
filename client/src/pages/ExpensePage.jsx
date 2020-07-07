@@ -70,6 +70,7 @@ const ExpensePage = () => {
           color="primary"
           variant="contained"
           className="category-btn"
+          size="large"
           onClick={() => getCategories()}
         >
           By Category
@@ -77,9 +78,10 @@ const ExpensePage = () => {
 
       {/* Button to get data by month */}
       <Button 
-          color="primary"
+          color="secondary"
           variant="contained"
           className="monthly-btn"
+          size="large"
           onClick={() => getMonths()}
         >
           By Month
