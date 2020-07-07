@@ -56,7 +56,9 @@ const ExpensePage = () => {
 
   return(
     <div className="ExpensePage">
-      <h2>Choose how you'd like to see Expense Data</h2>
+      {
+        showList.showCategory || showList.showMonthly ? <h2>Select a Card to View Details</h2> : <h2>Choose how you'd like to see Expense Data</h2>
+      }
 
       {/* If categoryList or monthlyList are populated then display the chosen list */}
       {

@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 import ExpenseModal from './ExpenseModal';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import Button from '@material-ui/core/Button';
-
+import CardActionArea from '@material-ui/core/CardActionArea';
+import Typography from '@material-ui/core/Typography';
 
 // Styling for Card List
 const useStyles = makeStyles((theme) => ({
@@ -17,7 +16,15 @@ const useStyles = makeStyles((theme) => ({
       margin: theme.spacing(1),
       width: theme.spacing(50),
       height: theme.spacing(16),
-    },
+    }
+  },
+  card: {
+    backgroundColor: 'transparent',
+    color: 'white'
+  },
+  cardActionArea: {
+    borderRadius: '10px',
+    backgroundColor: '#779FA1',
   },
 }));
 
@@ -72,27 +79,28 @@ const ExpenseCardList = ({ list, search }) => {
     {
       list &&
       list.map((listItem, index) => (
-        <Card 
-          className="list-item"
-          key={index}
-          index={index}
+        <CardActionArea
+          className={classes.cardActionArea}
           item={listItem}
+          onClick={() => getExpenseData(listItem)}
         >
-          {/* If listItem contains '_', then replace it with '/'. 
-              Else if listItem contains and multiple uppercase characters, add space and trim space before/after string. 
-              Else return listItem. */}
-          {
-            listItem.match('_') ? listItem.replace('_', '/') : listItem.match(/([A-Z])/g).length > 1 ? listItem.replace(/([A-Z])/g, ` $1`).trim() : listItem
-          }
-          <CardActions>
-            <Button 
-              item={listItem}
-              onClick={() => getExpenseData(listItem)}
-            >
-              Details
-            </Button>
-          </CardActions>
-        </Card>
+          <Card 
+            className={classes.card}
+            elevation={0}
+            key={index}
+            index={index}
+            item={listItem}
+          >
+            <Typography variant='h5'>
+              {/* If listItem contains '_', then replace it with '/'. 
+                  Else if listItem contains and multiple uppercase characters, add space and trim space before/after string. 
+                  Else return listItem. */}
+              {
+                listItem.match('_') ? listItem.replace('_', '/') : listItem.match(/([A-Z])/g).length > 1 ? listItem.replace(/([A-Z])/g, ` $1`).trim() : listItem
+              }
+            </Typography>
+          </Card>
+        </CardActionArea>
       ))
     }
 
