@@ -1,7 +1,7 @@
 import React from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 
-// Chart parameters when displayed
+// Container to display ExpenseChart 
 const ExpenseChart = ({ data }) => {
   return (
     <LineChart
