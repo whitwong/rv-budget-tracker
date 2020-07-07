@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import ExpenseDetails from './ExpenseDetails';
+import ExpenseModal from './ExpenseModal';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import Button from '@material-ui/core/Button';
 
+
+// Styling for Card List
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
@@ -19,13 +21,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// Get list data and display using Material-UI components
+// Top level variable to store selected search item
+let selectedListItem;
+
+// Container to display expenses using Material-UI Card components
 const ExpenseCardList = ({ list, search }) => {
   const classes = useStyles();
 
   // React hook for expense variables
-  const [expenseDetails, setExpenseDetails] = useState(null);
-  const [showExpenseDetails, setShowExpenseDetails] = useState(false)
+  const [expenseData, setExpenseData] = useState(null);
+  const [open, setOpen] = useState(false);
 
   // Helper function to clean up returned data before passing to ExpenseDetails
   const cleanData = ( data ) => {
@@ -42,19 +47,24 @@ const ExpenseCardList = ({ list, search }) => {
     return cleanData
   }
 
+  // CardList container to display monthly/category items
   // Send request to get data associated with category/month
-  const getExpenseDetails = ( listItem ) => {
+  const getExpenseData = ( listItem ) => {
     let url = "";
     search === 'category' ? url='/getExpenseCategory/' : url='/getExpenseMonthly/';
+    selectedListItem = listItem;
 
     fetch(url+listItem)
         .then(response => response.json())
         .then(data => cleanData(data))
-        .then(data => {
-          setShowExpenseDetails(true);
-          setExpenseDetails(data);
-        })
+        .then(data => setExpenseData(data)) // Set expenseData with returned data
+        .then(() => handleOpen())  // Open dialog if data returned from fetch request
+        .catch(err => console.log("Woops...Trouble retrieving data " + err))
   }
+
+  // Modal Open/Close Functions
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   return(
     <div className={classes.root}>
@@ -77,7 +87,7 @@ const ExpenseCardList = ({ list, search }) => {
           <CardActions>
             <Button 
               item={listItem}
-              onClick={() => getExpenseDetails(listItem, search)}
+              onClick={() => getExpenseData(listItem)}
             >
               Details
             </Button>
@@ -86,9 +96,9 @@ const ExpenseCardList = ({ list, search }) => {
       ))
     }
 
-    {/* Display expense details */}
+    {/* Display expense details via modal dialog*/}
     {
-      showExpenseDetails ? <ExpenseDetails data={expenseDetails}/> : null
+      open ? <ExpenseModal data={expenseData} isOpen={open} handleClose={handleClose} search={search} searchItem={selectedListItem}/> : null
     }
   </div>
   );
