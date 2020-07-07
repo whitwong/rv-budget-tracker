@@ -13,10 +13,13 @@ client.connect();
 
 // GET route to find and return all distinct categories
 function getCategories(req, res) {
+  console.log("getCategories endpoint");
+
   client
     .query('SELECT distinct category from expenses;')
     .then(data => {
       res.status(200).send(data.rows);
+      console.log(`queried for distinct categories and sent to client`);
     })
     .catch(err => {
       res.status(404).send(err);
@@ -25,10 +28,13 @@ function getCategories(req, res) {
 
 // GET route to find and return all expenses of a specified category
 function getExpenseCategory(req, res) {
+  console.log("getExpenseCategory endpoint");
+
   client
     .query('SELECT * from expenses where category = $1 order by purchase_date asc;', [req.params.category])
     .then(data => {
       res.status(200).send(data.rows);
+      console.log(`queried category data for ${req.params.category} and sent to client`);
     })
     .catch(err => {
       res.status(404).send(err);
@@ -37,6 +43,8 @@ function getExpenseCategory(req, res) {
 
 // GET route to query for all expenses of a specified month
 function getExpenseMonthly(req, res) {
+  console.log("getExpenseMonthly endpoint");
+  
   const selectedMonth = req.params.month;
 
   if (selectedMonth !== 'December'){
@@ -44,6 +52,7 @@ function getExpenseMonthly(req, res) {
       .query(`SELECT * from expenses where purchase_date >= '2019-${month[selectedMonth]}-01' and purchase_date < '2019-${month[selectedMonth]+1}-01' order by purchase_date asc;`)
       .then(data => {
         res.status(200).send(data.rows);
+        console.log(`queried monthly data for ${selectedMonth} and sent to client`);
       })
       .catch(err => {
         res.status(404).send(err);
@@ -54,6 +63,7 @@ function getExpenseMonthly(req, res) {
       .query(`SELECT * from expenses where (purchase_date >= '2019-12-01' and purchase_date < '2019-12-31' OR purchase_date >= '2018-12-01' and purchase_date < '2018-12-31') order by purchase_date asc;`)
       .then(data => {
         res.status(200).send(data.rows);
+        console.log(`queried monthly data for ${selectedMonth} and sent to client`);
       })
       .catch(err => {
         res.status(404).send(err);
