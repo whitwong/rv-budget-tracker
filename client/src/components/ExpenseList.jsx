@@ -1,21 +1,12 @@
 import React, { useState } from 'react';
-import ExpenseChart from './ExpenseChart';
-// import ExpenseModal from './ExpenseModal';
+import ExpenseModal from './ExpenseModal';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import Button from '@material-ui/core/Button';
-// Dialog import
-import Dialog from '@material-ui/core/Dialog';
-import MuiDialogTitle from '@material-ui/core/DialogTitle';
-import MuiDialogContent from '@material-ui/core/DialogContent';
-import MuiDialogActions from '@material-ui/core/DialogActions';
-import IconButton from '@material-ui/core/IconButton';
-import CloseIcon from '@material-ui/icons/Close';
-import Typography from '@material-ui/core/Typography';
-import { withStyles } from '@material-ui/core/styles';
 
 
+// Styling for Card List
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
@@ -30,52 +21,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const styles = (theme) => ({
-  root: {
-    margin: 0,
-    padding: theme.spacing(2),
-  },
-  closeButton: {
-    position: 'absolute',
-    right: theme.spacing(1),
-    top: theme.spacing(1),
-    color: theme.palette.grey[500],
-  },
-});
-const DialogTitle = withStyles(styles)((props) => {
-  const { children, classes, onClose, ...other } = props;
-  return (
-    <MuiDialogTitle disableTypography className={classes.root} {...other}>
-      <Typography variant="h6">{children}</Typography>
-      {onClose ? (
-        <IconButton aria-label="close" className={classes.closeButton} onClick={onClose}>
-          <CloseIcon />
-        </IconButton>
-      ) : null}
-    </MuiDialogTitle>
-  );
-});
+// Top level variable to store selected search item
+let selectedListItem;
 
-const DialogContent = withStyles((theme) => ({
-  root: {
-    padding: theme.spacing(2),
-  },
-}))(MuiDialogContent);
-
-const DialogActions = withStyles((theme) => ({
-  root: {
-    margin: 0,
-    padding: theme.spacing(1),
-  },
-}))(MuiDialogActions);
-
-// Get list data and display using Material-UI components
+// Container to display expenses using Material-UI Card components
 const ExpenseCardList = ({ list, search }) => {
   const classes = useStyles();
 
   // React hook for expense variables
   const [expenseData, setExpenseData] = useState(null);
-  const [showExpenseModal, setShowExpenseModal] = useState(false)
+  const [open, setOpen] = useState(false);
 
   // Helper function to clean up returned data before passing to ExpenseDetails
   const cleanData = ( data ) => {
@@ -92,29 +47,24 @@ const ExpenseCardList = ({ list, search }) => {
     return cleanData
   }
 
+  // CardList container to display monthly/category items
   // Send request to get data associated with category/month
   const getExpenseData = ( listItem ) => {
     let url = "";
     search === 'category' ? url='/getExpenseCategory/' : url='/getExpenseMonthly/';
+    selectedListItem = listItem;
 
     fetch(url+listItem)
         .then(response => response.json())
         .then(data => cleanData(data))
-        .then(data => {
-          setShowExpenseModal(true);
-          setExpenseData(data);
-        })
+        .then(data => setExpenseData(data)) // Set expenseData with returned data
+        .then(() => handleOpen())  // Open dialog if data returned from fetch request
         .catch(err => console.log("Woops...Trouble retrieving data " + err))
   }
 
-  // Modal Functions
-  const [open, setOpen] = useState(false);
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-  const handleClose = () => {
-    setOpen(false);
-  };
+  // Modal Open/Close Functions
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   return(
     <div className={classes.root}>
@@ -137,10 +87,7 @@ const ExpenseCardList = ({ list, search }) => {
           <CardActions>
             <Button 
               item={listItem}
-              onClick={() => {
-                getExpenseData(listItem, search);
-                handleClickOpen()
-              }}
+              onClick={() => getExpenseData(listItem)}
             >
               Details
             </Button>
@@ -149,25 +96,9 @@ const ExpenseCardList = ({ list, search }) => {
       ))
     }
 
-    {/* Display expense details */}
-    {/* Make into a dialog box?????? */}
+    {/* Display expense details via modal dialog*/}
     {
-      // showExpenseDetails ? <ExpenseDetails data={expenseDetails}/> : null
-      // showExpenseModal ? <ExpenseModal data={expenseData} open={showExpenseModal} /> : null
-      // <ExpenseModal data={expenseData} open={showExpenseModal} />
-      <Dialog onClose={handleClose} aria-labelledby="customized-dialog-title" open={open}>
-        <DialogTitle id="customized-dialog-title" onClose={handleClose}>
-          Modal title
-        </DialogTitle>
-        <DialogContent dividers>
-          <ExpenseChart data={expenseData} />
-        </DialogContent>
-        <DialogActions>
-          <Button autoFocus onClick={handleClose} color="primary">
-            Save changes
-          </Button>
-        </DialogActions>
-      </Dialog>
+      open ? <ExpenseModal data={expenseData} isOpen={open} handleClose={handleClose} search={search} searchItem={selectedListItem}/> : null
     }
   </div>
   );
