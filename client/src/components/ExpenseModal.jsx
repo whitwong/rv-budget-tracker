@@ -1,19 +1,19 @@
-import React, { useState } from 'react';
+import React from 'react';
 import ExpenseChart from './ExpenseChart';
-import { withStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
-import MuiDialogTitle from '@material-ui/core/DialogTitle';
-import MuiDialogContent from '@material-ui/core/DialogContent';
-import MuiDialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogActions from '@material-ui/core/DialogActions';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
-import Typography from '@material-ui/core/Typography';
 
-const styles = (theme) => ({
+
+const useStyles = makeStyles((theme) => ({
   root: {
-    margin: 0,
-    padding: theme.spacing(2),
+    margin: theme.spacing(1),
+    padding: theme.spacing(2)
   },
   closeButton: {
     position: 'absolute',
@@ -21,60 +21,37 @@ const styles = (theme) => ({
     top: theme.spacing(1),
     color: theme.palette.grey[500],
   },
-});
+}));
 
-const DialogTitle = withStyles(styles)((props) => {
-  const { children, classes, onClose, ...other } = props;
-  return (
-    <MuiDialogTitle disableTypography className={classes.root} {...other}>
-      <Typography variant="h6">{children}</Typography>
-      {onClose ? (
-        <IconButton aria-label="close" className={classes.closeButton} onClick={onClose}>
-          <CloseIcon />
-        </IconButton>
-      ) : null}
-    </MuiDialogTitle>
-  );
-});
+// Container for modal containing expense data details
+const ExpenseModal = ({ data, isOpen, handleClose, search, searchItem }) => {
+  const classes = useStyles();
 
-const DialogContent = withStyles((theme) => ({
-  root: {
-    padding: theme.spacing(2),
-  },
-}))(MuiDialogContent);
-
-const DialogActions = withStyles((theme) => ({
-  root: {
-    margin: 0,
-    padding: theme.spacing(1),
-  },
-}))(MuiDialogActions);
-
-const ExpenseModal = ({ data, open }) => {
-  const [open, setOpen] = useState(false);
-
-  // const handleClickOpen = () => {
-  //   setOpen(true);
-  // };
-  const handleClose = () => {
-    setOpen(false);
-  };
+  const titleFormat = () => {
+    if(search === 'category'){
+      const cleanName = searchItem.match('_') ? searchItem.replace('_', '/') : searchItem.match(/([A-Z])/g).length > 1 ? searchItem.replace(/([A-Z])/g, ` $1`).trim() : searchItem
+      return `Chart and Expense Data for ${cleanName} Costs`
+    }
+    else {
+      return `Chart and Expense Data for Month of ${searchItem}`
+    }
+  }
 
   return (
     <div>
-      {/* <Button variant="outlined" color="primary" onClick={handleClickOpen}>
-        Open dialog
-      </Button> */}
-      <Dialog onClose={handleClose} aria-labelledby="customized-dialog-title" open={open}>
-        <DialogTitle id="customized-dialog-title" onClose={handleClose}>
-          Modal title
+      <Dialog fullScreen onClose={handleClose} aria-labelledby="dialog-title" open={isOpen}>
+        <DialogTitle id="dialog-title" onClose={handleClose}>
+          {titleFormat()}
+          <IconButton aria-label="close" className={classes.closeButton} onClick={handleClose}>
+            <CloseIcon />
+          </IconButton>
         </DialogTitle>
-        <DialogContent dividers>
+        <DialogContent className={classes.root} dividers>
           <ExpenseChart data={data} />
         </DialogContent>
         <DialogActions>
           <Button autoFocus onClick={handleClose} color="primary">
-            Save changes
+            Show Details
           </Button>
         </DialogActions>
       </Dialog>
