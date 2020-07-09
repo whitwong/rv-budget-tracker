@@ -1,5 +1,5 @@
 import React from 'react';
-import ExpenseChart from './ExpenseChart';
+import CustomPieChart from './CustomPieChart';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -30,16 +30,16 @@ const ExpenseModal = ({ data, isOpen, handleClose, search, searchItem }) => {
   const titleFormat = () => {
     if(search === 'category'){
       const cleanName = searchItem.match('_') ? searchItem.replace('_', '/') : searchItem.match(/([A-Z])/g).length > 1 ? searchItem.replace(/([A-Z])/g, ` $1`).trim() : searchItem
-      return `Chart and Expense Data for ${cleanName} Costs`
+      return `Expense Data for ${cleanName} Costs`
     }
     else {
-      return `Chart and Expense Data for Month of ${searchItem}`
+      return `Expense Data for Month of ${searchItem}`
     }
   }
 
   return (
     <div>
-      <Dialog fullScreen onClose={handleClose} aria-labelledby="dialog-title" open={isOpen}>
+      <Dialog onClose={handleClose} aria-labelledby="dialog-title" open={isOpen}>
         <DialogTitle id="dialog-title" onClose={handleClose}>
           {titleFormat()}
           <IconButton aria-label="close" className={classes.closeButton} onClick={handleClose}>
@@ -47,7 +47,7 @@ const ExpenseModal = ({ data, isOpen, handleClose, search, searchItem }) => {
           </IconButton>
         </DialogTitle>
         <DialogContent className={classes.root} dividers>
-          <ExpenseChart data={data} />
+          <CustomPieChart data={data} />
         </DialogContent>
         <DialogActions>
           <Button autoFocus onClick={handleClose} color="primary">
