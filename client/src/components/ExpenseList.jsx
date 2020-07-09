@@ -39,21 +39,6 @@ const ExpenseCardList = ({ list, search }) => {
   const [expenseData, setExpenseData] = useState(null);
   const [open, setOpen] = useState(false);
 
-  // Helper function to clean up returned data before passing to ExpenseDetails
-  const cleanData = ( data ) => {
-    let cleanData = data.map(d => {
-      return {
-        purchase_date: d.purchase_date.substring(0,10),
-        purchase_details: d.purchase_details,
-        location: d.location,
-        cost: parseFloat(d.cost),
-        purchaser: d.purchaser
-      }
-    })
-
-    return cleanData
-  }
-
   // CardList container to display monthly/category items
   // Send request to get data associated with category/month
   const getExpenseData = ( listItem ) => {
@@ -63,9 +48,8 @@ const ExpenseCardList = ({ list, search }) => {
 
     fetch(url+listItem)
         .then(response => response.json())
-        .then(data => cleanData(data))
-        .then(data => setExpenseData(data)) // Set expenseData with returned data
-        .then(() => handleOpen())  // Open dialog if data returned from fetch request
+        .then(data => setExpenseData(data))   // Set expenseData with returned data
+        .then(() => handleOpen())             // Open dialog if data returned from fetch request
         .catch(err => console.log("Woops...Trouble retrieving data " + err))
   }
 

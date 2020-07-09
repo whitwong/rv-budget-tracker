@@ -2,7 +2,7 @@ import React from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 
 // Container to display ExpenseChart 
-const ExpenseChart = ({ data }) => {
+const SimpleLineChart = ({ data }) => {
   return (
     <LineChart
       display="flex"
@@ -23,4 +23,4 @@ const ExpenseChart = ({ data }) => {
   );
 }
 
-export default ExpenseChart;
+export default SimpleLineChart;
