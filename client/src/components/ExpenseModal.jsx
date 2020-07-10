@@ -1,5 +1,6 @@
 import React from 'react';
 import CustomPieChart from './CustomPieChart';
+import BarChart from './BarChart';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -39,7 +40,7 @@ const ExpenseModal = ({ data, isOpen, handleClose, search, searchItem }) => {
 
   return (
     <div>
-      <Dialog onClose={handleClose} aria-labelledby="dialog-title" open={isOpen}>
+      <Dialog fullScreen onClose={handleClose} aria-labelledby="dialog-title" open={isOpen}>
         <DialogTitle id="dialog-title" onClose={handleClose}>
           {titleFormat()}
           <IconButton aria-label="close" className={classes.closeButton} onClick={handleClose}>
@@ -47,7 +48,7 @@ const ExpenseModal = ({ data, isOpen, handleClose, search, searchItem }) => {
           </IconButton>
         </DialogTitle>
         <DialogContent className={classes.root} dividers>
-          <CustomPieChart data={data} />
+        { search === 'category' ? <BarChart data={data} /> : <CustomPieChart data={data} /> }
         </DialogContent>
         <DialogActions>
           <Button autoFocus onClick={handleClose} color="primary">
