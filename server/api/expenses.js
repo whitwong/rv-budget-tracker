@@ -2,7 +2,7 @@
 
 const connectionString = require('../config').connectionString;
 const { Client } = require('pg');
-const month = require('../config').date;
+const monthNum = require('../config').monthMap;
 const formatData = require('../helpers').formatData;
 
 // *** Connect to Database *** //
@@ -33,9 +33,47 @@ function getExpenseCategory(req, res) {
 
   client
     .query('SELECT * from expenses where category = $1 order by purchase_date asc;', [req.params.category])
+    // Format data (ex: purchase_date change from ISOdatetime --> ISOdate, cost change from string --> number)
     .then(data => {
-      res.status(200).send(data.rows);
-      console.log(`queried category data for ${req.params.category} and sent to client`);
+      return formatData(data.rows)
+    })
+    // Create monthList array and monthDetails object. Map through monthList array and push detail elements into respective month object arrays in monthDetails object.
+    .then(data => {
+      const monthList = Array.from({length: 12}, (e, i) => new Date(null, i + 1, null).toLocaleDateString("en", {month: "long"}));
+      const monthDetails = Object.assign({}, ...monthList.map(m => ({[m]: []})))
+
+      monthList.map(m => {
+        data.forEach(element => {
+          if(element.purchase_date.substring(5, 7).match(monthNum[m])) {
+            monthDetails[m].push(element)
+          }
+        })
+      })
+
+      return { monthDetails, monthList }
+    })
+    // Create totalCosts object array to hold total expense costs for each month. Keep monthDetails object the same.
+    .then(({ monthDetails, monthList }) => {
+      let totalCosts = [];
+
+      monthList.map(m => {
+        let total = 0;
+        if(monthDetails[m].length === 0){
+          totalCosts.push({month: m, cost: 0})
+        }
+        else {
+          monthDetails[m].map(item => {
+            total = total + item.cost;
+          })
+          totalCosts.push({month: m, cost: Number(total.toFixed(2))})
+        }
+      })
+      
+      return { totalCosts, monthDetails }
+    })
+    // Send Total Costs and Month Details objects to client
+    .then(({ totalCosts, monthDetails }) => {
+      res.status(200).send({ totalCosts, monthDetails });
     })
     .catch(err => {
       res.status(404).send(err);
@@ -48,7 +86,7 @@ function getExpenseMonthly(req, res) {
   console.log("getExpenseMonthly endpoint");
   
   const selectedMonth = req.params.month;
-  const queryString = `SELECT * from expenses where purchase_date >= '2019-${month[selectedMonth]}-01' and purchase_date < '2019-${month[selectedMonth]+1}-01' order by purchase_date asc;`;
+  const queryString = `SELECT * from expenses where purchase_date >= '2019-${parseInt(monthNum[selectedMonth])}-01' and purchase_date < '2019-${parseInt(monthNum[selectedMonth])+1}-01' order by purchase_date asc;`;
   const queryStringDec = `SELECT * from expenses where (purchase_date >= '2019-12-01' and purchase_date < '2019-12-31' OR purchase_date >= '2018-12-01' and purchase_date < '2018-12-31') order by purchase_date asc;`;
 
   client
@@ -66,7 +104,7 @@ function getExpenseMonthly(req, res) {
       })
       return categoriesObj
     })
-    // Create new totalCosts array to hold total expense costs for each category. Keep categories object the same.
+    // Create totalCosts object array to hold total expense costs for each category. Keep categories object the same.
     .then(categoriesDetails => {
       let keys = Object.keys(categoriesDetails)
       let totalCosts = [];
@@ -76,7 +114,7 @@ function getExpenseMonthly(req, res) {
         categoriesDetails[key].map(item => {
           total = total + item.cost;
         })
-        totalCosts.push({name: key, totalCost: Number(total.toFixed(2))})
+        totalCosts.push({name: key, cost: Number(total.toFixed(2))})
       })
       return { totalCosts, categoriesDetails }
     })
