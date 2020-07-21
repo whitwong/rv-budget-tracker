@@ -40,40 +40,40 @@ function getExpenseCategory(req, res) {
     // Create monthList array and monthDetails object. Map through monthList array and push detail elements into respective month object arrays in monthDetails object.
     .then(data => {
       const monthList = Array.from({length: 12}, (e, i) => new Date(null, i + 1, null).toLocaleDateString("en", {month: "long"}));
-      const monthDetails = Object.assign({}, ...monthList.map(m => ({[m]: []})))
+      const details = Object.assign({}, ...monthList.map(m => ({[m]: []})))
 
       monthList.map(m => {
         data.forEach(element => {
           if(element.purchase_date.substring(5, 7).match(monthNum[m])) {
-            monthDetails[m].push(element)
+            details[m].push(element)
           }
         })
       })
 
-      return { monthDetails, monthList }
+      return { details, monthList }
     })
     // Create totalCosts object array to hold total expense costs for each month. Keep monthDetails object the same.
-    .then(({ monthDetails, monthList }) => {
+    .then(({ details, monthList }) => {
       let totalCosts = [];
 
       monthList.map(m => {
         let total = 0;
-        if(monthDetails[m].length === 0){
+        if(details[m].length === 0){
           totalCosts.push({month: m, cost: 0})
         }
         else {
-          monthDetails[m].map(item => {
+          details[m].map(item => {
             total = total + item.cost;
           })
           totalCosts.push({month: m, cost: Number(total.toFixed(2))})
         }
       })
       
-      return { totalCosts, monthDetails }
+      return { totalCosts, details }
     })
     // Send Total Costs and Month Details objects to client
-    .then(({ totalCosts, monthDetails }) => {
-      res.status(200).send({ totalCosts, monthDetails });
+    .then(({ totalCosts, details }) => {
+      res.status(200).send({ totalCosts, details });
     })
     .catch(err => {
       res.status(404).send(err);
@@ -105,22 +105,22 @@ function getExpenseMonthly(req, res) {
       return categoriesObj
     })
     // Create totalCosts object array to hold total expense costs for each category. Keep categories object the same.
-    .then(categoriesDetails => {
-      let keys = Object.keys(categoriesDetails)
+    .then(details => {
+      let keys = Object.keys(details)
       let totalCosts = [];
 
       keys.map(key => {
         let total = 0;
-        categoriesDetails[key].map(item => {
+        details[key].map(item => {
           total = total + item.cost;
         })
         totalCosts.push({name: key, cost: Number(total.toFixed(2))})
       })
-      return { totalCosts, categoriesDetails }
+      return { totalCosts, details }
     })
     // Send Total Costs and Category Details objects to client
-    .then(({ totalCosts, categoriesDetails }) => {
-      res.status(200).send({ totalCosts, categoriesDetails });
+    .then(({ totalCosts, details }) => {
+      res.status(200).send({ totalCosts, details });
       console.log(`queried monthly data for ${selectedMonth} and sent to client`)
     })
     .catch(err => {
