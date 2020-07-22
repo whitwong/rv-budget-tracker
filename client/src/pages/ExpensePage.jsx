@@ -1,9 +1,39 @@
 import React, { useState } from 'react';
-import Button from '@material-ui/core/Button';
 import ExpenseCardList from '../components/ExpenseList';
+import graphImg from '../line-chart-seo-and-web-svgrepo-com.svg'
+import { makeStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
+
+const useStyles = makeStyles(theme => ({
+  pageStyle: {
+    width: '80%',
+    flex: '1 0 auto',
+  },
+  categoryButton: {
+    background: '#BE375F',
+    color: '#fff',
+    '&:hover': {
+      background: '#c44b6f'
+    },
+  },
+  monthButton: {
+    marginLeft: theme.spacing(2),
+    background: '#ED8554',
+    color: '#fff',
+    '&:hover': {
+      background: '#ee9165'
+    },
+  },
+  imgStyle: {
+    display: 'flex',
+    margin: '0 auto',
+    width: '50%',
+  }
+}))
 
 // Container for Expense page view
 const ExpensePage = () => {
+  const classes = useStyles();
 
   // React hook for Categories
   let [categoryList, setCategories] = useState(null);
@@ -55,23 +85,15 @@ const ExpensePage = () => {
   }
 
   return(
-    <div className="ExpensePage">
+    <div className={classes.pageStyle}>
       {
         showList.showCategory || showList.showMonthly ? <h2>Select a Card to View Details</h2> : <h2>Choose how you'd like to see Expense Data</h2>
       }
 
-      {/* If categoryList or monthlyList are populated then display the chosen list */}
-      {
-        showList.showCategory ? <ExpenseCardList list={categoryList} search={search} /> 
-        : showList.showMonthly ? <ExpenseCardList list={monthlyList} search={search} />
-        : null
-      }
-
       {/* Button to get categories of data */}
       <Button 
-          color="primary"
+          className={classes.categoryButton}
           variant="contained"
-          className="category-btn"
           size="large"
           onClick={() => getCategories()}
         >
@@ -80,14 +102,21 @@ const ExpensePage = () => {
 
       {/* Button to get data by month */}
       <Button 
-          color="secondary"
+          className={classes.monthButton}
           variant="contained"
-          className="monthly-btn"
           size="large"
           onClick={() => getMonths()}
         >
           By Month
       </Button>
+
+      {/* If categoryList or monthlyList are populated then display the chosen list */}
+      {
+        showList.showCategory ? <ExpenseCardList list={categoryList} search={search} /> 
+        : showList.showMonthly ? <ExpenseCardList list={monthlyList} search={search} />
+        : <img src={graphImg} className={classes.imgStyle} alt='graphImg' />
+      }
+
     </div>
   );
 }
