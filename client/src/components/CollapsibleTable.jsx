@@ -21,44 +21,46 @@ const columns = [
 export default function CollapsibleTable({ data, expanded, dataSelection }) {
   return(
     <Collapse in={expanded} timeout="auto" unmountOnExit>
-      <TableContainer>
-        <Table stickyHeader aria-label="sticky table">
-          <TableHead>
-            <TableRow>
-              {columns.map(column => (
-                <TableCell
-                  key={column.id}
-                  style={{ minWidth: column.minWidth }}
-                >
-                  {column.label}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-          {
-            data.details[dataSelection] !== undefined 
-              ?
-            data.details[dataSelection].map(row => { 
-              return (
-                <TableRow key={row.cost+row.location}>
-                  {columns.map(column => {
-                    const value = row[column.id]
-                    return(
-                      <TableCell key={column.id}>
-                        {column.format && typeof value === 'number' ? column.format(value) : value}
-                      </TableCell>
-                    )
-                  })}
-                </TableRow>
-              )
-            })
-              :
-            <h3>Please select a bar/sector to view data.</h3>
-          }
-          </TableBody>
-        </Table>
-      </TableContainer>
+      {
+        data.details[dataSelection] !== undefined
+          ?
+        <TableContainer>
+          <Table stickyHeader aria-label="sticky table">
+            <TableHead>
+              <TableRow>
+                {columns.map(column => (
+                  <TableCell
+                    key={column.id}
+                    style={{ minWidth: column.minWidth }}
+                  >
+                    {column.label}
+                  </TableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+            {
+              data.details[dataSelection].map(row => { 
+                return (
+                  <TableRow key={row.cost+row.location}>
+                    {columns.map(column => {
+                      const value = row[column.id]
+                      return(
+                        <TableCell key={column.id}>
+                          {column.format && typeof value === 'number' ? column.format(value) : value}
+                        </TableCell>
+                      )
+                    })}
+                  </TableRow>
+                )
+              })
+            }
+            </TableBody>
+          </Table>
+        </TableContainer>
+          :
+        <h3>Please select a bar/sector to view data.</h3>
+      }
     </Collapse>
   )
 }
