@@ -21,7 +21,7 @@ const renderActiveShape = (props) => {
 
   return (
     <g>
-      <text x={cx} y={cy} dy={8} textAnchor="middle" fill={fill}>{payload.name}</text>
+      <text x={cx} y={cy} dy={8} textAnchor="middle" fill={fill}>{payload.name.match('_') ? payload.name.replace('_', '/') : payload.name.match(/([A-Z])/g).length > 1 ? payload.name.replace(/([A-Z])/g, ` $1`).trim() : payload.name}</text>
       {/* Main Wedges - fill cover activated on-hover */}
       <Sector
         cx={cx}
@@ -53,27 +53,34 @@ const renderActiveShape = (props) => {
 };
 
 // Main container for displaying data in Pie Chart form
-const CustomPieChart = ({ data }) => {
+const CustomPieChart = ({ data, handleSectorClick, handleChartDataClick }) => {
   const totalData = data.totalCosts;
-  const [activeIndex, setActiveIndex] = useState(0)
+  const [activeIndex, setActiveIndex] = useState(0);
+  const activeItem = totalData[activeIndex];
 
   const onPieEnter = (data, index) => {
     setActiveIndex(index)
   };
 
+  const sectorClick = () => {
+    handleSectorClick()
+    handleChartDataClick(activeItem.name)
+  }
+
   return (
-    <PieChart width={1000} height={1000}>
+    <PieChart width={800} height={500}>
       <Pie
         activeIndex={activeIndex}
         activeShape={renderActiveShape}
         data={totalData}
-        cx={500}
-        cy={300}
+        cx={400}
+        cy={250}
         innerRadius={100}
         outerRadius={200}
         fill="#585481"
         dataKey="cost"
         onMouseEnter={onPieEnter}
+        onClick={sectorClick}
       />
     </PieChart>
   );
