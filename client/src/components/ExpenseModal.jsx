@@ -74,7 +74,8 @@ const ExpenseModal = ({ data, isOpen, handleClose, search, searchItem }) => {
             ? 
           <BarChart data={data} handleSectorClick={handleSectorClick} handleChartDataClick={handleChartDataClick} /> 
             : 
-          <CustomPieChart data={data} handleSectorClick={handleSectorClick} /> }
+          <CustomPieChart data={data} handleSectorClick={handleSectorClick} handleChartDataClick={handleChartDataClick} /> 
+        }
         </DialogContent>
         <DialogActions>
           <Button autoFocus onClick={handleExpandClick} color="primary">
