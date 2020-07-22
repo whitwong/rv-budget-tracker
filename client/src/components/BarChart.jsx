@@ -1,4 +1,4 @@
-import React, { useState }from 'react';
+import React, { useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Cell } from 'recharts';
 import formatCurrency from '../helpers';
 
@@ -20,17 +20,21 @@ const CustomTooltip = ({ active, payload, label }) => {
 const SimpleBarChart = ({ data, handleSectorClick, handleChartDataClick }) => {
   const totalData = data.totalCosts;
   const [activeIndex, setActiveIndex] = useState(0);
-  const activeItem = totalData[activeIndex];
 
+  // Update activeIndex value and keep table showing on successive bar/sector clicks
   const barClick = (data, index) => {
-    console.log("Hello Whitney ", index)
     handleSectorClick()
     setActiveIndex(index)
-    handleChartDataClick(activeItem.month) //🚨🚨🚨 Need to figure out how to send over activeItem on initial click
   }
 
+  // When activeItem is updated, re-render to show data immediately in CollapsibleTable on onClick of bar/sector of graph
+  useEffect(() => {
+      const activeItem = totalData[activeIndex];
+      handleChartDataClick(activeItem.month)
+    }  
+  )
+
   return (
-    <div>
     <BarChart
       width={1000}
       height={600}
@@ -52,8 +56,6 @@ const SimpleBarChart = ({ data, handleSectorClick, handleChartDataClick }) => {
         }
       </Bar>
     </BarChart>
-    <p className="content">{`Uv of "${activeItem.month}": ${activeItem.cost}`}</p>
-    </div>
   );
 }
 

@@ -46,7 +46,6 @@ const ExpenseModal = ({ data, isOpen, handleClose, search, searchItem }) => {
 
   // Set category/month data based on user selection from chart
   const handleChartDataClick = (selection) => {
-    console.log("😈" + selection)
     setDataSelection(selection)
   }
 

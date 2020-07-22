@@ -16,3 +16,9 @@ update expenses set
 	purchase_details = 'AmeriGas Propane',
 	location = 'Russellville, AR' 
 where purchase_date = '2019-04-09' and location = 'Springdale, AR';
+
+-- 2020-07-21: Updated local and Heroku DB with the following
+UPDATE expenses set purchase_details = 'American Distributing - 9.1 gal' where purchase_details = 'American Distributing';
+UPDATE expenses set purchase_details = 'Pinnacle Propane - 9.5 gal' where purchase_details = 'Pinnacle Propane';
+UPDATE expenses set category = 'Propane' where purchase_date = '2019-10-21' and cost = '32.51';
+UPDATE expenses set purchase_details = 'Flying J - 10.32 gal' where purchase_details = 'Flying J' and cost = '32.51' and category = 'Propane'; -- @2.999/gal
