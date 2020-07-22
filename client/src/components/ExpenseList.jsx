@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
   },
   cardActionArea: {
     borderRadius: '10px',
-    backgroundColor: '#779FA1',
+    backgroundColor: '#429fa3',
   },
 }));
 
