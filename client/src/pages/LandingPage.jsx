@@ -9,7 +9,7 @@ const useStyles = makeStyles(theme => ({
 }))
 
 // Container for Landing Page view
-const LandingPage = () => {
+export default function LandingPage() {
   const classes = useStyles();
 
   return(
@@ -23,5 +23,3 @@ const LandingPage = () => {
     </div>
   );
 }
-
-export default LandingPage;

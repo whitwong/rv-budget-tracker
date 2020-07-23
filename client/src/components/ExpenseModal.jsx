@@ -13,9 +13,6 @@ import CollapsibleTable from './CollapsibleTable';
 
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    maxWidth: false
-  },
   closeButton: {
     position: 'absolute',
     right: theme.spacing(1),
@@ -23,8 +20,7 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.grey[500],
   },
   content: {
-    margin: theme.spacing(1),
-    padding: theme.spacing(2)
+    overflowY: 'initial'
   },
 }));
 

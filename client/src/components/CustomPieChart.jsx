@@ -56,27 +56,35 @@ const renderActiveShape = (props) => {
 const CustomPieChart = ({ data, handleSectorClick, handleChartDataClick }) => {
   const totalData = data.totalCosts;
   const [activeIndex, setActiveIndex] = useState(0);
-  const activeItem = totalData[activeIndex];
 
   const onPieEnter = (data, index) => {
     setActiveIndex(index)
   };
 
-  const sectorClick = () => {
+  const sectorClick = (data, index) => {
+    const activeItem = totalData[activeIndex];
     handleSectorClick()
     handleChartDataClick(activeItem.name)
   }
 
+  // Pie Chart Syle Variables
+  const chartWidth = 750;
+  const chartHeight = 500;
+  const cx = chartWidth/2;
+  const cy = chartHeight/2;
+  const innerRadius = 100;
+  const outerRadius = innerRadius*2;
+
   return (
-    <PieChart width={800} height={500}>
+    <PieChart width={chartWidth} height={chartHeight}>
       <Pie
         activeIndex={activeIndex}
         activeShape={renderActiveShape}
         data={totalData}
-        cx={400}
-        cy={250}
-        innerRadius={100}
-        outerRadius={200}
+        cx={cx}
+        cy={cy}
+        innerRadius={innerRadius}
+        outerRadius={outerRadius}
         fill="#585481"
         dataKey="cost"
         onMouseEnter={onPieEnter}
