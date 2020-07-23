@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import ExpenseCardList from '../components/ExpenseList';
-import graphImg from '../line-chart-seo-and-web-svgrepo-com.svg'
+import graphImg from '../assets/line-chart-seo-and-web-svgrepo-com.svg'
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 

@@ -36,8 +36,8 @@ const SimpleBarChart = ({ data, handleSectorClick, handleChartDataClick }) => {
 
   return (
     <BarChart
-      width={1000}
-      height={600}
+      width={750}
+      height={500}
       data={totalData}
       margin={{
         top: 5, right: 30, left: 20, bottom: 5,
@@ -47,7 +47,7 @@ const SimpleBarChart = ({ data, handleSectorClick, handleChartDataClick }) => {
       <XAxis dataKey="month" />
       <YAxis />
       <Tooltip content={<CustomTooltip />} wrapperStyle={{ width: 120, backgroundColor: '#f5f5f5', padding: 10, border: '1px solid #d5d5d5', borderRadius: 3}} />
-      <Legend />
+      <Legend wrapperStyle={{margin: '-0.5em'}} />
       <Bar dataKey="cost" fill="#8884d8" onClick={barClick} >
         {
           totalData.map((entry, index) => (
