@@ -22,3 +22,9 @@ UPDATE expenses set purchase_details = 'American Distributing - 9.1 gal' where p
 UPDATE expenses set purchase_details = 'Pinnacle Propane - 9.5 gal' where purchase_details = 'Pinnacle Propane';
 UPDATE expenses set category = 'Propane' where purchase_date = '2019-10-21' and cost = '32.51';
 UPDATE expenses set purchase_details = 'Flying J - 10.32 gal' where purchase_details = 'Flying J' and cost = '32.51' and category = 'Propane'; -- @2.999/gal
+
+-- 2020-07-24: Updated local and Heroku DB with the following. While developing LandingPage data/display, wanted to cleanup data. 
+-- Some InitialCosts in DB I considered to be Rig Upgrades and updated DB accordingly. Also decided to better describe Rig category as Rig Upgrades.
+update expenses set category = 'Rig' where cost = '105.42' and category = 'InitialCosts';
+update expenses set category = 'Rig' where cost = '4244.00' and category = 'InitialCosts';
+update expenses set category = 'RigUpgrades' where category = 'Rig';
