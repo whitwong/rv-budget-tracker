@@ -30,6 +30,11 @@ app.get('/getCategories', require('./server/api/expenses').getCategories);
 app.get('/getExpenseCategory/:category', require('./server/api/expenses').getExpenseCategory);
 app.get('/getExpenseMonthly/:month', require('./server/api/expenses').getExpenseMonthly);
 
+// Routes for Landing Page data
+app.get('/getCategoryTotals', require('./server/api/landingpage').getCategoryTotals);
+app.get('/getOverallExpenseTotal', require('./server/api/landingpage').getOverallExpenseTotal);
+app.get('/getInitialCost', require('./server/api/landingpage').getInitialCost);
+
 // A "catchall" handler for any request that doesn't match one above. Send back React's index.html file.
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname+'/client/build/index.html'));
