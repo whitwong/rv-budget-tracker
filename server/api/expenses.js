@@ -17,7 +17,7 @@ function getCategories(req, res) {
   console.log("getCategories endpoint");
 
   client
-    .query('SELECT distinct category from expenses;')
+    .query(`SELECT distinct category from expenses where category in('Maintenance_Repair', 'Gas', 'Propane', 'Parking_Toll', 'InitialCosts', 'RigUpgrades', 'InternationalCashExchange', 'Entertainment', 'Food', 'Internet', 'Rent');`)
     .then(data => {
       res.status(200).send(data.rows);
       console.log(`queried for distinct categories and sent to client`);
@@ -86,8 +86,8 @@ function getExpenseMonthly(req, res) {
   console.log("getExpenseMonthly endpoint");
   
   const selectedMonth = req.params.month;
-  const queryString = `SELECT * from expenses where purchase_date >= '2019-${parseInt(monthNum[selectedMonth])}-01' and purchase_date < '2019-${parseInt(monthNum[selectedMonth])+1}-01' order by purchase_date asc;`;
-  const queryStringDec = `SELECT * from expenses where (purchase_date >= '2019-12-01' and purchase_date < '2019-12-31' OR purchase_date >= '2018-12-01' and purchase_date < '2018-12-31') order by purchase_date asc;`;
+  const queryString = `SELECT * from expenses where category in('Maintenance_Repair', 'Gas', 'Propane', 'Parking_Toll', 'InitialCosts', 'RigUpgrades', 'InternationalCashExchange', 'Entertainment', 'Food', 'Internet', 'Rent') and purchase_date >= '2019-${parseInt(monthNum[selectedMonth])}-01' and purchase_date < '2019-${parseInt(monthNum[selectedMonth])+1}-01' order by purchase_date asc;`;
+  const queryStringDec = `SELECT * from expenses where category in('Maintenance_Repair', 'Gas', 'Propane', 'Parking_Toll', 'InitialCosts', 'RigUpgrades', 'InternationalCashExchange', 'Entertainment', 'Food', 'Internet', 'Rent') and (purchase_date >= '2019-12-01' and purchase_date < '2019-12-31' OR purchase_date >= '2018-12-01' and purchase_date < '2018-12-31') order by purchase_date asc;`;
 
   client
     .query(selectedMonth !== 'December' ? queryString : queryStringDec)
