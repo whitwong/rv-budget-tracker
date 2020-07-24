@@ -48,19 +48,19 @@ const ExpensePage = () => {
   const getCategories = () => {
     if (categoryList === null) {
       fetch('/getCategories')
-      .then(response => response.json())
-      .then(data => { 
-        console.log("retrieving categories from db")
+        .then(response => response.json())
+        .then(data => { 
+          console.log("retrieving categories from db")
 
-        categoryList = data.map(obj => obj.category);
-        setCategories(categoryList);
-        setSearch("category");
-        setShowList({
-          showCategory: true,
-          showMonthly: false
+          categoryList = data.map(obj => obj.category);
+          setCategories(categoryList);
+          setSearch("category");
+          setShowList({
+            showCategory: true,
+            showMonthly: false
+          })
         })
-      })
-      .catch(err => { console.log(err); throw(err) })
+        .catch(err => { console.log(err); throw(err) })
     }
     else {
       console.log("retrieving categories from state")
