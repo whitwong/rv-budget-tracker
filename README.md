@@ -37,6 +37,7 @@ If I placed the data in a public space, then:
 - Recharts
 - Material UI
 - Nodemon
+- Node v10.15.3
 
 ## 🔧 **Tools Used for Development/Deployment**
 - GitHub
