@@ -33,17 +33,19 @@ const useStyles = makeStyles(theme => ({
 export default function LandingPage() {
   const classes = useStyles();
 
-  const [overallTotal, setOverallTotal] = useState(null);
-  const [initialCost, setInitialCost] = useState(null);
-  const [travelCost, setTravelCost] = useState(null);
-  const [allTotalsList, setAllTotalsList] = useState([]);
-  const [travelTotalsList, setTravelTotalsList] = useState([])
+  const [overallTotalCost, setOverallTotalCost] = useState(null);               // Overall total cost value
+  const [initialCost, setInitialCost] = useState(null);                         // Initial cost value of Rig
+  const [travelCost, setTravelCost] = useState(null);                           // Travel cost (overall cost - initial cost)
+  const [allTotalsArr, setAllTotalsArr] = useState([]);                         // Array of objects containing totals for all categories [{category: 'string1', total: num1}, {category: 'string2', total: num2}, ...]
+  const [travelTotalsArr, setTravelTotalsArr] = useState([])                    // Array of objects containing totals for all categories except InitialCosts
+  const [modifiedAllTotalsArr, setModifiedAllTotalsArr] = useState([]);         // Array of objects containing 2 objects: 1) InitialCosts 2) TravelCosts
+  const [modifiedTravelTotalsArr, setModifiedTravelTotalsArr] = useState([]);   // Array of objects containing travel costs broken down by main expense items and consolidating small amounts into 'Other' category
 
   // Get Overall Expense Total and set value
   useEffect(() => {
     fetch('/getOverallExpenseTotal')
       .then(response => response.json())
-      .then(data => setOverallTotal(data[0].total))
+      .then(data => setOverallTotalCost(data[0].total))
       .catch(err => { console.log(err); throw(err) })
   }, []);
 
@@ -56,36 +58,38 @@ export default function LandingPage() {
   }, []);
 
   // Calculate Travel Cost by removing initialCost
+  // Re-render if overallTotal and initialCost change (i.e. state is updated)
   useEffect(() => {
-    setTravelCost(overallTotal-initialCost)
-  }, [overallTotal, initialCost])
+    if(overallTotalCost !== null && initialCost !== null ) setTravelCost(Number(overallTotalCost)-Number(initialCost));
+  }, [overallTotalCost, initialCost]);
 
   // Get Category Totals and pass data to PieChart component
   useEffect(() => {
     fetch('/getCategoryTotals')
       .then(response => response.json())
       .then(data => {
-        setAllTotalsList(data)
+        const list = data.filter(obj => obj.category !== 'InitialCosts');
+        setTravelTotalsArr(list);
+        setAllTotalsArr(data);
       })
       .catch(err => { console.log(err); throw(err) })
   }, [])
 
-  // Get Category Totals without InitialCosts and pass data to PieChart component
+  // Landing page pie charts are very busy. Modify data to show consolidated costs.
   useEffect(() => {
-    fetch('/getCategoryTotals')
-      .then(response => response.json())
-      .then(data => {
-        let list = []
-        data.map(obj => {
-          if(obj.category !== 'InitialCosts') {
-            list.push(obj);
-          }
-        })
-        setTravelTotalsList(list);
-      })
-      .catch(err => { console.log(err); throw(err) })
-  }, [])
+    // For Total Overall Expenses, only show Initial Costs and Travel Costs.
+    // Re-render if allTotalsList and travelCost change.
+    const modifyTotalList = allTotalsArr.filter(obj => obj.category === 'InitialCosts');            // Filter object containing InitalCosts and store in new array.
+    setModifiedAllTotalsArr([...modifyTotalList, {category: "TravelCosts", total: travelCost}]);    // Set state with filtered array and new Travel Totals object.
+  }, [allTotalsArr, travelCost]);
 
+  useEffect(() => {
+    // For Travel Costs, show main expenses. This includes: Gas, Food, Rig Upgrades, Maintenance/Repair. Consolidate everything else to "Other".
+    // Re-render if travelTotalsArr changes
+    const modifyTravelList = travelTotalsArr.filter(obj => ('Gas Food RigUpgrades Maintenance_Repair').includes(obj.category) === true);
+    const otherCatTotal = travelTotalsArr.filter(obj => ('Gas Food RigUpgrades Maintenance_Repair').includes(obj.category) === false).map(obj => obj.total).reduce((a,c) => a + c, 0);
+    setModifiedTravelTotalsArr([...modifyTravelList, {category: 'Other', total: otherCatTotal}]);
+  }, [travelTotalsArr])
 
   return(
     <div className={classes.pageStyle}>
@@ -103,7 +107,7 @@ export default function LandingPage() {
                   Total Overall Expenses 
                 </Typography>
                 <Typography variant="h3" className={classes.textOverall}>
-                  {helper.formatCurrency(overallTotal)}
+                  {helper.formatCurrency(overallTotalCost)}
                 </Typography>
               </CardContent>
             </Card>
@@ -120,7 +124,7 @@ export default function LandingPage() {
                   <Typography variant="h4" className={classes.textInitialCost}>
                     {helper.formatCurrency(initialCost)}
                   </Typography>
-                  <Typography color="white">
+                  <Typography>
                     Cost of Rig before traveling
                   </Typography>
               </CardContent>
@@ -135,7 +139,7 @@ export default function LandingPage() {
                   <Typography variant="h4" className={classes.textTravelCost}>
                     {helper.formatCurrency(travelCost)}
                   </Typography>
-                  <Typography color="white">
+                  <Typography>
                     Total expenses while traveling minus initial rig cost
                   </Typography>
               </CardContent>
@@ -147,13 +151,13 @@ export default function LandingPage() {
           <Grid item xs={12} sm={6}>
             <Card className={classes.cardStyle}>
               <Typography variant="h5">Total Overall Expenses Chart</Typography>
-              <PieChart totalsList={allTotalsList} />
+              <PieChart totalsList={modifiedAllTotalsArr} />
             </Card>
           </Grid>
           <Grid item xs={12} sm={6}>
             <Card className={classes.cardStyle}>
               <Typography variant="h5">Total Travel Costs Chart</Typography>
-              <PieChart totalsList={travelTotalsList} />
+              <PieChart totalsList={modifiedTravelTotalsArr} />
             </Card>
           </Grid>
         </Grid>
