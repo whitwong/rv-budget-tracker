@@ -65,6 +65,7 @@ const ExpenseCardList = ({ list, search }) => {
       list.map((listItem, index) => (
         <CardActionArea
           className={classes.cardActionArea}
+          key={listItem}
           item={listItem}
           onClick={() => getExpenseData(listItem)}
         >
