@@ -26,7 +26,8 @@ module.exports = {
         let cleanData = [];
         data.rows.map(d => {
           cleanData.push({
-            category: d.category,
+            // To help make Landing Page labels on Travel Cost pie chart look better, modifying returned category names for Maintenance_Repair and RigUpgrades
+            category: d.category === 'Maintenance_Repair' ? 'Maintenance' : d.category === 'RigUpgrades' ? 'Rig' : d.category,
             total: parseFloat(d.total)
           })
         })
@@ -63,7 +64,13 @@ module.exports = {
     console.log('getInitialCost endpoint');
 
     client
-      .query(`select sum(cost) as total from expenses where category = 'InitialCosts';`)
+      .query(
+        `select 
+          category,
+          sum(cost) as total 
+        from expenses 
+        where category = 'InitialCosts'
+        group by category;`)
       .then(data => {
         res.status(200).send(data.rows)
       })
