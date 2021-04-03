@@ -74,5 +74,8 @@ module.exports = {
       .then(data => {
         res.status(200).send(data.rows)
       })
+      .catch(err => {
+        res.status(404).send(err);
+      })
   }
 }
