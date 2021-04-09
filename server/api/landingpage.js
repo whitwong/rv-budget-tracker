@@ -6,6 +6,7 @@ const { Client } = require('pg');
 // *** Connect to Database *** //
 const client = new Client({
   connectionString: connectionString,
+  ssl: { rejectUnauthorized: false }
 });
 
 client.connect();
