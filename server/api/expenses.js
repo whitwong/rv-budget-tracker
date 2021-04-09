@@ -8,6 +8,7 @@ const formatData = require('../helpers').formatData;
 // *** Connect to Database *** //
 const client = new Client({
   connectionString: connectionString,
+  ssl: true
 });
 
 client.connect();
